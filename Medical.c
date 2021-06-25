@@ -10,9 +10,12 @@ struct medical
    float price;
    char rack[10];
 }m1;
+long z=sizeof(m1);
+
 void data();
 void add();
 void display();
+void sales();
 void main()
 {
     clrscr();
@@ -24,7 +27,7 @@ void data()
 {
    int n;
    x:
-   printf("\n\n\n1.ADD DATA\n2.Display\n\n0.EXIT");
+   printf("\n\n\n1.ADD DATA\n2.DISPLAY\n3.SALES\n\n0.EXIT");
    printf("\n\n\t\tEnter your choice:");
    scanf("%d",&n);
    switch(n)
@@ -34,6 +37,9 @@ void data()
        break;
      case 2:
        display();
+       break;
+     case 3:
+       sales();
        break;
      case 0:
        abort();
@@ -49,7 +55,7 @@ void add()
    FILE *p;
    int a,i;
    clrscr();
-   p=fopen("med.txt","wb");
+   p=fopen("medical.txt","wb");
    if(p!=NULL)
    {
      printf("\n How many tablet want to be store?");
@@ -58,8 +64,10 @@ void add()
      {
        printf("\nTablet name:");
        scanf("%s",m1.tb);
+       strupr(m1.tb);
        printf("\nCompany name:" );
        scanf("%s",m1.cn);
+       strupr(m1.cn);
        printf("\nQuntity:");
        scanf("%d",&m1.quan);
        printf("\nPrice for quntity");
@@ -78,12 +86,12 @@ void display()
    FILE *p;
    int a,i;
    clrscr();
-   p=fopen("med.txt","rb");
+   p=fopen("medical.txt","rb");
     if(p!=NULL)
    {  printf("TABLET NAME        COMPANY            QUANTITY  PRICE   RACK");
-      for(i=1;i<=1;i++)
+      while( fread(&m1,sizeof(m1),1,p)==1)
       {
-   fread(&m1,sizeof(m1),1,p);
+
    printf("\n%-20s%-20s%-9d%-7.2f%5s\n",m1.tb,m1.cn,m1.quan,m1.price,m1.rack);
       }
      fclose(p);
@@ -93,55 +101,68 @@ void display()
 }
 void sales()
 {
-   int a[100],n,i,s;
+   int a[100],n,i,s,k;
    int total=0;
-   float p,t;
-   char*name[100][50],flag;
+   float pr,t;
+   char name[100][50],flag,r[50];
    FILE *p;
-   p=fopen("medi.txt","rbt");
+   p=fopen("medical.txt","rb+");
    if (p!=NULL)
    {
-      printf("how many item");
+      printf("how many item?\n");
       scanf("%d",&n);
       for(i=0;i<n;i++)
       {
-      printf("enter tanblet name");
+      printf("Enter tanblet name:");
       scanf("%s",name[i]);
-      printf("quantity");
-      scanf("%d",&[i]);
+      strupr(name[i]);
+      printf("Quantity:");
+      scanf("%d",&a[i]);
       }
-   printf("confirm to print");
-   scanf("%f",flag);
-   if(flag=='y')
-   ptintf("quantity tablet name company name Rs/per date");
-   for(i=0;i<n;i++)
-     {
-       fread(&m1,sizeof(m1),1,p);
-       if(m1.tb==name[i])
+       //   printf("confirm to print?");
+       //   scanf("%s",flag);
+   //if((flag=='y')||(flag=='Y'))
+    //{
+      printf("\n\nQuantity  Tablet name    Company name   Rs/per   Rate    \n");
+      for(i=0;i<n;i++)
+      {
+          rewind(p);
+          while(!(feof(p)))
+           {
+         fread(&m1,sizeof(m1),1,p);
+         k=strcmp(m1.tb,name[i]);
+         if(k==0)
          {
-       t=(m1.price/quantity);
-       p=t*q;
-       total=p+total;
-       m1.quan=m1.quan-q;
-       m1.price=m1.price-p;
-       fseek(p,-sizeof(m1)L,1);
-       printf("%d%s%f%f",q,m1.tb,m1.cn,t,p);
-         }
-        else
-       printf("file can't be open");
-     }
-       fclose(p);
-       printf("total amount:");
-       printf("%d",total);
-       printf("do u want one more bill?;(Y/N)");
-       scanf("%s",flag);
-       strupr(flag);
-        if(flag='Y')
-        sales();
-         else
-          data();
-    }     else sales();
-     tablet search()
+             t=m1.price/m1.quan;
+              pr=t*a[i];
+              total=pr+total;
+             /* strcpy(m2.tb,m1.tb);
+              strcpy(m2.cn,m1.cn);
+              strcpy(m2.rack,m1.rack);*/
+              m1.quan=m1.quan-a[i];
+              printf("\nxxxxxxxxxxxxxxx:%d",m1.quan);
+              m1.price=m1.price-pr;
+              fseek(p,-z,1);
+              fwrite(&m1,sizeof(m1),1,p);
+              printf("%-10d%-15s%-15s%-7.2f%-7.2f",a[i],m1.tb,m1.cn,t,pr);
+              break;
+          }
+          else
+               printf("\n\nIteam not found....!");
+           }
+      }
+      printf("\n\ntotal amount:");
+      printf("%d",total);
+      printf("\n\ndo u want one more bill?;(Y/N)");
+      scanf("%s",flag);
+    //   if((flag=='Y')||(flag=='y'))
+      // sales();
+          //   else
+      data();
+    // }     else sales();
+     }else printf("\n\nFile can not be open...!");
+}
+   /*  ile tablet search()
      {
       FILE *p;
       char*name:
@@ -221,3 +242,4 @@ void sales()
 
 
 
+*/
